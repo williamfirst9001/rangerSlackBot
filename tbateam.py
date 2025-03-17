@@ -7,18 +7,12 @@ from datetime import datetime
 app = Flask(__name__)
 
 # Load Slack & TBA API keys
-SLACK_BOT_TOKEN = "xoxb-8608547380275-8611219529428-iAgsErzMbSgc6JGcTqF2OgK1"
-TBA_API_KEY = "OCJuyauyfkMDtglxtN0rgif8sOzhUq5b2giMSCTy5aicPKvL1pmjdO9Ep6K8tbKI"
-CHANNEL_ID = "C08HWG60LTD"  # Replace with your Slack channel ID
+SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
+TBA_API_KEY = os.getenv("TBA_API_KEY")
+CHANNEL_ID = os.getenv("CHANNEL_ID")  # Replace with your Slack channel ID
 
 slack_client = WebClient(token=SLACK_BOT_TOKEN)
 
-def get_event_data(team_number):
-    """Fetch event data from The Blue Alliance API"""
-    url = f"https://www.thebluealliance.com/api/v3/frc{team_number}/matches/2025"
-    headers = {"X-TBA-Auth-Key": TBA_API_KEY}
-    response = requests.get(url, headers=headers)
-    return response.json()
 
 #@app.route("/slack", methods=["POST"])
 
@@ -31,8 +25,8 @@ def slack_command():
     if not team:
         return jsonify({"response_type": "ephemeral", "text": "Usage: `/tba event_key`"})
 
-    API_KEY = "OCJuyauyfkMDtglxtN0rgif8sOzhUq5b2giMSCTy5aicPKvL1pmjdO9Ep6K8tbKI"
-    HEADERS = {"X-TBA-Auth-Key": API_KEY}
+    
+    HEADERS = {"X-TBA-Auth-Key": TBA_API_KEY}
 
     # API URL to get info about an FRC team (change team number as needed)
     TEAM_NUMBER = "frc254"  # Example: Team 254 (Cheesy Poofs)
