@@ -14,9 +14,9 @@ CHANNEL_ID = os.getenv("CHANNEL_ID")  # Replace with your Slack channel ID
 slack_client = WebClient(token=SLACK_BOT_TOKEN)
 
 
-#@app.route("/slack", methods=["POST"])
+@app.route("/slack", methods=["POST"])
 
-@app.route("/")
+#@app.route("/")
 def slack_command():
     """Handles Slack commands and posts to a channel"""
     data = request.form
@@ -107,7 +107,7 @@ def slack_command():
         # Post message to a specific channel
         #slack_client.chat_postMessage(channel=CHANNEL_ID, text=message)
 
-    return jsonify(str(message))
+    return jsonify({"text": message})
 
 if __name__ == "__main__":
     app.run(port=3000)
