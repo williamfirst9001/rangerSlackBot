@@ -97,12 +97,12 @@ def slack_command():
 
 
 
-            average_opr = sum(team_opr)/len(team_opr)
-            average_dpr = sum(team_dpr)/len(team_dpr)
-            average_ccwm = sum(team_ccwm)/len(team_ccwm)
-            message += f"Team {team} has an average OPR of {round(average_opr)} \n"
-            message += f"Team {team} has an average DPR of {round(average_dpr)} \n"
-            message += f"Team {team} has an average CCWM of {round(average_ccwm)} \n"
+        average_opr = sum(team_opr)/len(team_opr)
+        average_dpr = sum(team_dpr)/len(team_dpr)
+        average_ccwm = sum(team_ccwm)/len(team_ccwm)
+        message += f"Team {team} has an average OPR of {round(average_opr)} \n"
+        message += f"Team {team} has an average DPR of {round(average_dpr)} \n"
+        message += f"Team {team} has an average CCWM of {round(average_ccwm)} \n"
 
         # Post message to a specific channel
         #slack_client.chat_postMessage(channel=CHANNEL_ID, text=message)
