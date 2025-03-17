@@ -96,20 +96,20 @@ def slack_command():
             message += f" and a CCWM of {round(opr_data['ccwms'][f'frc{team}'])} \n"
 
 
-        try: 
-            average_opr = sum(team_opr)/len(team_opr)
-        except ZeroDivisionError:
-            average_opr = 0
+            try: 
+                average_opr = sum(team_opr)/len(team_opr)
+            except ZeroDivisionError:
+                average_opr = 0
 
-        try: 
-            average_dpr = sum(team_dpr)/len(team_dpr)
-        except ZeroDivisionError:
-            average_dpr = 0
+            try: 
+                average_dpr = sum(team_dpr)/len(team_dpr)
+            except ZeroDivisionError:
+                average_dpr = 0
 
-        try: 
-            average_ccwm = sum(team_ccwm)/len(team_ccwm)
-        except ZeroDivisionError:
-            average_ccwm = 0
+            try: 
+                average_ccwm = sum(team_ccwm)/len(team_ccwm)
+            except ZeroDivisionError:
+                average_ccwm = 0
         message += f"Team {team} has an average OPR of {round(average_opr)} \n"
         message += f"Team {team} has an average DPR of {round(average_dpr)} \n"
         message += f"Team {team} has an average CCWM of {round(average_ccwm)} \n"
