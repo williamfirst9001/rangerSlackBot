@@ -19,18 +19,14 @@ slack_client = WebClient(token=SLACK_BOT_TOKEN)
 @app.route("/")
 def slack_command():
     """Handles Slack commands and posts to a channel"""
-    #data = request.form
-    #team = int(data.get("text"))  # Get input from command
-    team = 3310
+    data = request.form
+    team = int(data.get("text"))  # Get input from command
+    
     if not team:
         return jsonify({"response_type": "ephemeral", "text": "Usage: `/tba event_key`"})
 
     
     HEADERS = {"X-TBA-Auth-Key": TBA_API_KEY}
-
-    # API URL to get info about an FRC team (change team number as needed)
-    TEAM_NUMBER = "frc254"  # Example: Team 254 (Cheesy Poofs)
-
 
     events = f"https://www.thebluealliance.com/api/v3/team/frc{team}/events/2025"
 
