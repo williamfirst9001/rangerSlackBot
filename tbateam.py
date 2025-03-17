@@ -22,7 +22,7 @@ slack_client = WebClient(token=SLACK_BOT_TOKEN)
 
 
 
-@app.route("stbmatchpred",methods=["POST"])
+@app.route("/stbmatchpred",methods=["POST"])
 def stbmatchpred():
     sb = statbotics.Statbotics()
     text = request.form.get('text', '')  # Get the text after /command
