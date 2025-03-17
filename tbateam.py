@@ -20,10 +20,12 @@ slack_client = WebClient(token=SLACK_BOT_TOKEN)
 def slack_command():
     """Handles Slack commands and posts to a channel"""
     data = request.form
-    team = int(data.get("text"))  # Get input from command
+    team = data.get("text")  # Get input from command
     
     if not team:
         return jsonify({"response_type": "ephemeral", "text": "Usage: `/tba event_key`"})
+    
+    team = int(team)
 
     
     HEADERS = {"X-TBA-Auth-Key": TBA_API_KEY}
