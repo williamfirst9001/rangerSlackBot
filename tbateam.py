@@ -4,6 +4,10 @@ from flask import Flask, request, jsonify
 from slack_sdk import WebClient
 from datetime import datetime
 
+import statbotics
+
+
+
 app = Flask(__name__)
 
 # Load Slack & TBA API keys
@@ -12,6 +16,34 @@ TBA_API_KEY = os.getenv("TBA_API_KEY")
 CHANNEL_ID = os.getenv("CHANNEL_ID")  # Replace with your Slack channel ID
 
 slack_client = WebClient(token=SLACK_BOT_TOKEN)
+
+
+
+
+
+
+@app.route("stbmatchpred",methods=["POST"])
+def stbmatchpred():
+    sb = statbotics.Statbotics()
+    text = request.form.get('text', '')  # Get the text after /command
+    args = text.split()  # Split into arguments based on spaces
+    
+    if len(args) < 2:
+        return jsonify({"response_type": "ephemeral", "text": "Please provide at least two arguments."})
+
+    match_num = args[0].strip()
+    event_code = args[1].strip()
+
+    data = sb.get_match(f"{event_code}_qm{match_num}")["pred"]
+    message = ""
+
+
+    message += f"Red win probability is {data['red_win_prob']*100}. Blue win probability is {100-data['red_win_prob']*100}\n"
+
+    message += f"Red expected score is {data['red_score']}. Blue expected score is {data['blue_score']}"
+
+    return jsonify({"text": message})
+
 
 
 
@@ -32,8 +64,13 @@ def tbateamevent():
     event_code = args[1].strip()
 
     team_key = f"frc{team}"
+    
+    print(event_code)
 
     url = f"https://www.thebluealliance.com/api/v3/event/{event_code}/matches"
+
+
+    
     # Make the request
     response = requests.get(url, headers=HEADERS)
 
@@ -41,6 +78,8 @@ def tbateamevent():
 
     if response.status_code == 200:
         data = response.json()
+
+
         #print(True)
 
 
@@ -74,7 +113,21 @@ def tbateamevent():
     message += f"{team} mean alliance tele points {mean(team_tele_scored)} \n"
 
     message += f"{team}'s average auto score is {'above' if mean(event_auto_scored)/2-mean(team_auto_scored)<0 else 'below'} average by {abs(mean(event_auto_scored)/2-mean(team_auto_scored))} \n"
-    message += f"{team}'s average tele score is {'above' if mean(event_tele_scored)/2-mean(team_tele_scored)<0 else 'below'} average by {abs(mean(event_tele_scored)/2-mean(team_tele_scored))}"
+    message += f"{team}'s average tele score is {'above' if mean(event_tele_scored)/2-mean(team_tele_scored)<0 else 'below'} average by {abs(mean(event_tele_scored)/2-mean(team_tele_scored))} \n"
+
+
+
+    return jsonify({"text": message})
+
+
+
+@app.route("/help",methods =["POST"])
+def help():
+    message = ""
+
+    message +="/tbateam ---[team #] --- gives the OPR, DPR and CCWM of any team at all events they have attended \n"
+    message +="/tbateamevent ---[team # | event code] --- gives the OPR, DPR and CCWM of any team at all events they have attended \n"
+    message +="/stbmatchpred ---[match # | event code] --- gives the win probabilities and expected score of a match"
 
     return jsonify({"text": message})
 
