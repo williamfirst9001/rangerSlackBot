@@ -28,8 +28,8 @@ def tbateamevent():
     if len(args) < 2:
         return jsonify({"response_type": "ephemeral", "text": "Please provide at least two arguments."})
 
-    team = args[0]
-    event_code = args[1]
+    team = args[0].strip()
+    event_code = args[1].strip()
 
     team_key = f"frc{team}"
 
