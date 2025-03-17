@@ -14,10 +14,74 @@ CHANNEL_ID = os.getenv("CHANNEL_ID")  # Replace with your Slack channel ID
 slack_client = WebClient(token=SLACK_BOT_TOKEN)
 
 
-@app.route("/slack", methods=["POST"])
 
-#@app.route("/")
-def slack_command():
+
+
+@app.route("/tbateamevent",methods=["POST"])
+def tbateamevent():
+    HEADERS = {"X-TBA-Auth-Key": TBA_API_KEY}
+    def mean(val):
+        return round(sum(val)/len(val))
+    text = request.form.get('text', '')  # Get the text after /command
+    args = text.split()  # Split into arguments based on spaces
+    
+    if len(args) < 2:
+        return jsonify({"response_type": "ephemeral", "text": "Please provide at least two arguments."})
+
+    team = args[0]
+    event_code = args[1]
+
+    team_key = f"frc{team}"
+
+    url = f"https://www.thebluealliance.com/api/v3/event/{event_code}/matches"
+    # Make the request
+    response = requests.get(url, headers=HEADERS)
+
+
+
+    if response.status_code == 200:
+        data = response.json()
+        #print(True)
+
+
+    team_auto_scored = [] # per match
+    event_auto_scored = [] #per match
+
+    team_tele_scored = []
+    event_tele_scored = []
+
+
+    #print(sb.get_match(f"{event_code}_qm1")["pred"])
+    message = ""
+
+
+    for x in data:
+        
+        event_auto_scored.append(x["score_breakdown"]["blue"]["autoPoints"]+x["score_breakdown"]["red"]["autoPoints"])
+        event_tele_scored.append(x["score_breakdown"]["blue"]["teleopPoints"]+x["score_breakdown"]["red"]["teleopPoints"])
+
+        if(team_key in x["alliances"]["red"]["team_keys"]):
+            team_auto_scored.append(x["score_breakdown"]["red"]["autoPoints"])
+            team_tele_scored.append(x["score_breakdown"]["red"]["teleopPoints"])
+        elif (team_key in x["alliances"]["blue"]["team_keys"]):
+            team_auto_scored.append(x["score_breakdown"]["blue"]["autoPoints"])
+            team_tele_scored.append(x["score_breakdown"]["blue"]["teleopPoints"])
+
+
+    message += f"{event_code} mean auto points {mean(event_auto_scored)/2} \n"
+    message += f"{event_code} mean teleop points {mean(event_tele_scored)/2} \n"
+    message += f"{team} mean alliance auto points {mean(team_auto_scored)} \n"
+    message += f"{team} mean alliance tele points {mean(team_tele_scored)} \n"
+
+    message += f"{team}'s average auto score is {'above' if mean(event_auto_scored)/2-mean(team_auto_scored)<0 else 'below'} average by {abs(mean(event_auto_scored)/2-mean(team_auto_scored))} \n"
+    message += f"{team}'s average tele score is {'above' if mean(event_tele_scored)/2-mean(team_tele_scored)<0 else 'below'} average by {abs(mean(event_tele_scored)/2-mean(team_tele_scored))}"
+
+    return jsonify({"text": message})
+
+
+
+@app.route("/tbateam", methods=["POST"])
+def tbateam():
     """Handles Slack commands and posts to a channel"""
     data = request.form
     team = data.get("text")  # Get input from command
@@ -31,9 +95,6 @@ def slack_command():
     HEADERS = {"X-TBA-Auth-Key": TBA_API_KEY}
 
     events = f"https://www.thebluealliance.com/api/v3/team/frc{team}/events/2025"
-
-
-
     url = f"https://www.thebluealliance.com/api/v3/team/frc{team}/matches/2025"
     # Make the request
     response = requests.get(url, headers=HEADERS)
