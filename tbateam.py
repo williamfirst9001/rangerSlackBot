@@ -191,23 +191,23 @@ def tbateam():
 
     #print(datetime.today(),end_date)
 
-        if datetime.today() > start_date:
+        #if datetime.today() > start_date:
             #print(f"The event {x['name']} has already happened.")
             #print(x["first_event_code"])
 
-            opr_url = f"https://www.thebluealliance.com/api/v3/event/2025{x['first_event_code']}/oprs"
+        opr_url = f"https://www.thebluealliance.com/api/v3/event/2025{x['first_event_code']}/oprs"
 
-            opr_response = requests.get(opr_url,headers=HEADERS)
+        opr_response = requests.get(opr_url,headers=HEADERS)
 
-            opr_data = opr_response.json()
-            team_opr.append(opr_data["oprs"][f"frc{team}"])
+        opr_data = opr_response.json()
+        team_opr.append(opr_data["oprs"][f"frc{team}"])
 
-            team_dpr.append(opr_data["dprs"][f"frc{team}"])
-            team_ccwm.append(opr_data["ccwms"][f"frc{team}"])
-            
-            message += f"At {x['name']} team {team} had an OPR of {round(opr_data['oprs'][f'frc{team}'])}"
-            message += f" a DPR of {round(opr_data['dprs'][f'frc{team}'])}"
-            message += f" and a CCWM of {round(opr_data['ccwms'][f'frc{team}'])} \n"
+        team_dpr.append(opr_data["dprs"][f"frc{team}"])
+        team_ccwm.append(opr_data["ccwms"][f"frc{team}"])
+        
+        message += f"At {x['name']} team {team} had an OPR of {round(opr_data['oprs'][f'frc{team}'])}"
+        message += f" a DPR of {round(opr_data['dprs'][f'frc{team}'])}"
+        message += f" and a CCWM of {round(opr_data['ccwms'][f'frc{team}'])} \n"
 
 
         # Post message to a specific channel
