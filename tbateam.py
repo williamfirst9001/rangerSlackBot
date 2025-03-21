@@ -187,11 +187,11 @@ def tbateam():
 
     for x in event_data:
         #print(x["end_date"])
-        end_date = datetime.strptime(x["end_date"], "%Y-%m-%d")
+        start_date = datetime.strptime(x["start_date"], "%Y-%m-%d")
 
     #print(datetime.today(),end_date)
 
-        if datetime.today() > end_date:
+        if datetime.today() > start_date:
             #print(f"The event {x['name']} has already happened.")
             #print(x["first_event_code"])
 
